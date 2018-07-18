@@ -167,7 +167,11 @@ void loop()
   double updown_avg = (average_updown)*10;
   double leftright_avg = average_leftright*10;
 
-  if(button_mode == 1)
+  if(digitalRead(buttonPin_mode)== LOW && digitalRead(buttonPin) == LOW && digitalRead(buttonPin_press)== LOW)
+  {
+    Serial.println("1000");
+  }
+  if(digitalRead(buttonPin_mode)== HIGH)
   { 
     /*
      * for speical operation function for car driving; transfer data x, y, press, mode, up, down, left, right
@@ -181,47 +185,41 @@ void loop()
     if(leftright_avg < -40)
     {
       Serial.println("998"); //998 means right
-      delay(40);
       }
     if(leftright_avg > 40)
     {
       Serial.println("997"); //997 means left
     }
     //click left and right key
-    if(updown_avg < -20 || (leftright_avg < -30 && leftright_avg > -45 && updown_avg < -25)) // right turn
+    if(updown_avg < 0 ) // right turn
     { 
       Serial.println("996"); //996 keypress down
-      delay(40);
     }
-
-    if(leftright_avg > -40 && leftright_avg < 40)
+/*
+    if((leftright_avg > -40 && leftright_avg < 40) && (updown_avg > -20 && updown_avg < 20))
     {
       Serial.println("1000");//release all
-      delay(40);
     }
+*/   
     
-    
-    if(updown_avg > 20 || (leftright_avg < -30 && leftright_avg > -45 && updown_avg > 25) ) // left turn
+    if(updown_avg > 65) // left turn
     {
        Serial.println("995"); // keypress up
-       delay(40);
     }
-    racing_f_button = digitalRead(button_f_game);
-    if(racing_f_button == HIGH)
-    {
-      //Keyboard.press('f');
-      delay(100);
-    }     
   }
 
-
+ if(digitalRead(buttonPin)== HIGH && digitalRead(buttonPin_press) == HIGH)
+ {
+  Serial.println("994");
+  delay(100);
+ }
   
  /*
   * cursor move function
   */
  double z_mouse = z_arg*8;
  double y_mouse = -y_arg*6;
- if(digitalRead(buttonPin)== HIGH)
+ if(digitalRead(buttonPin)== HIGH && digitalRead(buttonPin_press) == LOW)
  {
    // in total 3 data, x, y
     Serial.println(String(int(z_mouse))+":"+String(int(y_mouse)));
@@ -230,9 +228,7 @@ void loop()
  /*
   * click and drag function
   */
-  
-  pressState = digitalRead(buttonPin_press);
-  if(pressState == HIGH && digitalRead(buttonPin == LOW))
+  if(digitalRead(buttonPin)== LOW && digitalRead(buttonPin_press) == HIGH)
   {
     Serial.println(999);
     delay(200);
@@ -243,6 +239,7 @@ void loop()
    * 0 cursor move function
    * 1 game mode
    */
+/*
   modeState = digitalRead(buttonPin_mode);
   if(modeState == HIGH)
   {
@@ -268,6 +265,7 @@ void loop()
   {
     button_mode = int(button_count/2);
   }
-  
+*/
   delay(5);
 }
+
